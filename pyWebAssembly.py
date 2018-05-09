@@ -736,7 +736,7 @@ opcodes_binary2text = {
 0x39:'f64.store',		# memarg
 0x3a:'i32.store8',		# memarg
 0x3b:'i32.store16',		# memarg
-0x3c:'i64.store8',,		# memarg
+0x3c:'i64.store8',		# memarg
 0x3d:'i64.store16',		# memarg
 0x3e:'i64.store32',		# memarg
 0x3f:'memory.size',
@@ -882,7 +882,7 @@ opcodes_binary2text = {
 
 # key-value pairs of text opcodes and their binary reperesentation
 opcodes_text2binary = {}
-for opcode inopcodes_binary2text:
+for opcode in opcodes_binary2text:
   opcodes_text2binary[opcodes_binary2text[opcode]]=opcode
 
 
