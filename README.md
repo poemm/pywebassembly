@@ -50,12 +50,12 @@ TODO:
 
 # examples/
 
-Example uses of pywebassembly.
+Example uses of PyWebAssembly.
 
 
 # tests/
 
-Testing of pywebassembly.
+Testing of PyWebssembly.
 
 
 
