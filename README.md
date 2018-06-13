@@ -60,4 +60,4 @@ Testing of PyWebssembly.
 
 # Notes and Conventions.
 
-Both "PyWebassembly" and "pywebassembly" can be used to refer to the project.
+Both "PyWebAssembly" and "pywebassembly" can be used to refer to the project.
