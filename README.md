@@ -3,7 +3,7 @@
 
 ## pywebassembly.py
 
-PyWebAssembly closely follows [WebAssembly Specification, Release 1.0](https://webassembly.github.io/spec/core/_download/WebAssembly.pdf) (pdf), implementing necessary parts of chapters 2, 3, 4, 5, and 7. Each section of pywebassembly.py references its definition in the spec, and is in the same order as the spec.
+PyWebAssembly closely follows [WebAssembly Specification, Release 1.0](https://webassembly.github.io/spec/core/_download/WebAssembly.pdf) (pdf), implementing necessary parts of chapters 2, 3, 4, 5, and 7. Each section of pywebassembly.py references its definition in the Spec document, and follows the same order as the Spec document.
 
 Closely following the linked Spec document is useful for the following reasons.
  - The Spec document can be used as a user's manual.
@@ -51,7 +51,7 @@ Example uses of PyWebAssembly.
 
 ## tests/
 
-Testing of PyWebssembly.
+Testing of PyWebAssembly.
 
 
 # Notes and Conventions.
