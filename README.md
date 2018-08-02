@@ -1,4 +1,4 @@
-*This is nearing completion! It needs a clean-up and an audit.*
+*This is nearing completion! It is currently being cleaned-up and is in need of an audit.*
 
 
 ## pywebassembly.py
@@ -16,7 +16,7 @@ PyWebAssembly is also structured for my personal economy-of-thought as it is bei
 
 **API**: It may be possible to limit the API to functions defined in the WebAssembly Spec section 7.1 Embedding. These functions are implemented in section "7.1" of pywebassembly.py, but please reference the spec for details. The only awkward part is that `invoke_func` requires specifying `i32.const`, `i64.const`, `f32.const`, or `f64.const` with each argument -- we are considering deviating from the spec and relaxing this requirement.
 
-The following sample code uses the Spec Embedding API to "spin-up" a VM instance, instantiate a module, and invoke its exported function.
+The following code "spins-up" a VM instance, instantiate a module, and invoke its exported function. See the `examples` directory for more examples.
 
 
 ```
@@ -36,6 +36,8 @@ args = [["i32.const",10]]				#list of arguments, one arg in our case
 store,ret = wasm.invoke_func(store,funcaddr,args)	#finally, invoke the function
 print(ret)						#list [89] of return values, limitted to one value in Wasm 1.0
 ```
+
+
 
 
 TODO:
