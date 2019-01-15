@@ -1,3 +1,20 @@
+"""
+    PyWebAssembly - Implmentation of WebAssembly, and some tools.
+    Copyright (C) 2018-2019  Paul Dworzanski
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
 
 import sys
 sys.path.append('..')
@@ -9,8 +26,8 @@ modules = { }         #all moduleinst's indexed by their names, used to call fun
 
 #instantiate first module
 file_ = open('mod1.wasm', 'rb')
-bytestar = memoryview(file_.read())                     #can also use bytearray or bytes instead of memoryview
-module = wasm.decode_module(bytestar)                   #get module as abstract syntax
+bytecode = memoryview(file_.read())                     #can also use bytearray or bytes instead of memoryview
+module = wasm.decode_module(bytecode)                   #get module as abstract syntax
 externvalstar = []                                      #imports, none for fibonacci.wasm
 store,moduleinst,ret = wasm.instantiate_module(store,module,externvalstar)
 
@@ -19,8 +36,8 @@ modules["mod1"] = moduleinst
 
 #instantiate second module
 file_ = open('mod2.wasm', 'rb')
-bytestar = memoryview(file_.read())                     #can also use bytearray or bytes instead of memoryview
-module = wasm.decode_module(bytestar)                   #get module as abstract syntax
+bytecode = memoryview(file_.read())                     #can also use bytearray or bytes instead of memoryview
+module = wasm.decode_module(bytecode)                   #get module as abstract syntax
 externvalstar = []                                      #imports, none for fibonacci.wasm
 for import_ in module["imports"]:			#for each import, look for it's matching export
   importmoduleinst = modules[import_["module"]]

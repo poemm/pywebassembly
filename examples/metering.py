@@ -1,25 +1,27 @@
 #!/usr/bin/env python
-
 """
-University of Illinois/NCSA Open Source License
-Copyright (c) 2018 Paul Dworzanski
-All rights reserved.
+    PyWebAssembly - Implmentation of WebAssembly, and some tools.
+    Copyright (C) 2018-2019  Paul Dworzanski
 
-Developed by:           Paul Dworzanski
-                        Ethereum Foundation
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal with the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimers.
-Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimers in the documentation and/or other materials provided with the distribution.
-Neither the names of Paul Dworzanski, Ethereum Foundation, nor the names of its contributors may be used to endorse or promote products derived from this Software without specific prior written permission.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 
 import sys
 sys.path.append('..')
 
-from pywebassembly import *
+import pywebassembly as wasm
 
 
 
@@ -392,7 +394,7 @@ def inject_helper_functions(mod):
 def tests(mod):
   #print_tree(mod)
   #print_sections(mod)
-  print_tree(mod["funcs"])
+  #print_tree(mod["funcs"])
   #print_sections(mod)
   #test metering injection to each func
   for f in mod["funcs"]:
@@ -409,13 +411,16 @@ def tests(mod):
 
 def parse_wasm_and_inject_and_generate(filename):
   with open(filename, 'rb') as f:
-    wasm = memoryview(f.read())
-    mod = decode_module(wasm)
+    bytecode = memoryview(f.read())
+    mod = wasm.decode_module(bytecode)
     inject_metering_calls_to_each_function(mod)
     #must inject above metering calls before injecting helper functions
     inject_helper_functions(mod)
     #print_sections(mod)
-    spec_binary_module_inv_to_file(mod,filename.split('.')[0]+"_metered.wasm")
+    fout = open(filename.split('.')[0]+"_metered.wasm", 'wb')
+    bytecode_out = wasm.encode_module(mod)
+    fout.write(bytecode_out)
+    fout.close()
 
 
 if __name__ == "__main__":

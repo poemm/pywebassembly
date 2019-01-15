@@ -1,17 +1,19 @@
-
 """
-University of Illinois/NCSA Open Source License
-Copyright (c) 2018 Paul Dworzanski
-All rights reserved.
+    PyWebAssembly - Implmentation of WebAssembly, and some tools.
+    Copyright (C) 2018-2019  Paul Dworzanski
 
-Developed by:           Paul Dworzanski
-                        Ethereum Foundation
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal with the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimers.
-Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimers in the documentation and/or other materials provided with the distribution.
-Neither the names of Paul Dworzanski, Ethereum Foundation, nor the names of its contributors may be used to endorse or promote products derived from this Software without specific prior written permission.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 
@@ -20,7 +22,11 @@ import os
 import sys
 sys.path.append('..')  #since pywebassembly.py is in parent dir
 #import pywebassembly_runtime_loop_works as pywebassembly
-import pywebassembly
+#import pywebassembly
+import pywebassembly as wasm
+#import pywebassembly
+import spec_binary_format as binary_format
+import spec_execution as execution
 
 import json
 import struct #for decoding floats
@@ -58,18 +64,18 @@ def instantiate_spectest_module(store):
   def spectest__print(store,arg):
     if verbose>1: print(arg)
     return store,[]
-  pywebassembly.alloc_func(store, [["i32"],[]], spectest__print_i32)
-  pywebassembly.alloc_func(store, [["i64"],[]], spectest__print_i64)
-  pywebassembly.alloc_func(store, [["f32"],[]], spectest__print_f32)
-  pywebassembly.alloc_func(store, [["f64"],[]], spectest__print_f64)
-  pywebassembly.alloc_func(store, [["i32","f32"],[]], spectest__print_i32_f32)
-  pywebassembly.alloc_func(store, [["f64","f64"],[]], spectest__print_f64_f64)
-  pywebassembly.alloc_func(store, [[],[]], spectest__print)
-  pywebassembly.alloc_mem(store, {"min":1,"max":2})	#min:1,max:2 required by import.wast:
-  pywebassembly.alloc_global(store, ["const", "i32"], 666)	#666 required by import.wast
-  pywebassembly.alloc_global(store, ["const", "f32"], 0.0)
-  pywebassembly.alloc_global(store, ["const", "f64"], 0.0)
-  pywebassembly.alloc_table(store, [{"min":10,"max":20}, "anyfunc"])  #max was 30, changed to 20 for import.wast
+  wasm.alloc_func(store, [["i32"],[]], spectest__print_i32)
+  wasm.alloc_func(store, [["i64"],[]], spectest__print_i64)
+  wasm.alloc_func(store, [["f32"],[]], spectest__print_f32)
+  wasm.alloc_func(store, [["f64"],[]], spectest__print_f64)
+  wasm.alloc_func(store, [["i32","f32"],[]], spectest__print_i32_f32)
+  wasm.alloc_func(store, [["f64","f64"],[]], spectest__print_f64_f64)
+  wasm.alloc_func(store, [[],[]], spectest__print)
+  wasm.alloc_mem(store, {"min":1,"max":2})	#min:1,max:2 required by import.wast:
+  wasm.alloc_global(store, ["const", "i32"], 666)	#666 required by import.wast
+  wasm.alloc_global(store, ["const", "f32"], 0.0)
+  wasm.alloc_global(store, ["const", "f64"], 0.0)
+  wasm.alloc_table(store, [{"min":10,"max":20}, "anyfunc"])  #max was 30, changed to 20 for import.wast
   moduleinst = {"types":[[["i32"],[]],
                           [["i64"],[]],
                           [["i32"],[]],
@@ -117,17 +123,17 @@ def instantiate_test_module(store):
     pass
   def test__func_i64_i64(store,arg):
     pass
-  pywebassembly.alloc_func(store, [[],[]], test__func)
-  pywebassembly.alloc_func(store, [["i32"],[]], test__func_i32)
-  pywebassembly.alloc_func(store, [["f32"],[]], test__func_f32)
-  pywebassembly.alloc_func(store, [[],["i32"]], test__func__i32)
-  pywebassembly.alloc_func(store, [[],["f32"]], test__func__f32)
-  pywebassembly.alloc_func(store, [["i32"],["i32"]], test__func_i32_i32)
-  pywebassembly.alloc_func(store, [["i64"],["i64"]], test__func_i64_i64)
-  pywebassembly.alloc_mem(store, {"min":1,"max":None})	
-  pywebassembly.alloc_global(store, ["const", "i32"], 666)
-  pywebassembly.alloc_global(store, ["const", "f32"], 0.0)
-  pywebassembly.alloc_table(store, [{"min":10,"max":None}, "anyfunc"])
+  wasm.alloc_func(store, [[],[]], test__func)
+  wasm.alloc_func(store, [["i32"],[]], test__func_i32)
+  wasm.alloc_func(store, [["f32"],[]], test__func_f32)
+  wasm.alloc_func(store, [[],["i32"]], test__func__i32)
+  wasm.alloc_func(store, [[],["f32"]], test__func__f32)
+  wasm.alloc_func(store, [["i32"],["i32"]], test__func_i32_i32)
+  wasm.alloc_func(store, [["i64"],["i64"]], test__func_i64_i64)
+  wasm.alloc_mem(store, {"min":1,"max":None})	
+  wasm.alloc_global(store, ["const", "i32"], 666)
+  wasm.alloc_global(store, ["const", "f32"], 0.0)
+  wasm.alloc_table(store, [{"min":10,"max":None}, "anyfunc"])
   moduleinst = {"types":[[["i32"],[]],
                          [["f32"],[]],
                          [[],["i32"]],
@@ -169,11 +175,16 @@ def instantiate_module_from_wasm_file(test,filename,store,registered_modules):
   with open(filename, 'rb') as f:
     #memoryview doesn't make copy, bytearray may require copy
     wasmbytes = memoryview(f.read())
-    module = pywebassembly.decode_module(wasmbytes)
+    module = wasm.decode_module(wasmbytes)
+    #module = pywebassembly.decode_module(wasmbytes)
     #print("module",module)
     if module=="malformed": return None,"malformed"
     #validate
-    ret = pywebassembly.validate_module(module)
+    ret = wasm.validate_module(module)
+    #print("OKOK")
+    #print(module)
+    #ret = pywebassembly.validate_module(module)
+    #print("valid:",ret)
     if type(ret)==str and ret[:14]=="error: invalid":
       #print(ret)
       #print(test["text"])
@@ -208,7 +219,7 @@ def instantiate_module_from_wasm_file(test,filename,store,registered_modules):
     #print("store",store)
     #print("module",module)
     #print("externvalstar",externvalstar)
-    store,moduleinst,ret = pywebassembly.instantiate_module(store,module,externvalstar)
+    store,moduleinst,ret = wasm.instantiate_module(store,module,externvalstar)
     #print("moduleinst",moduleinst)
     #print(store["mems"][0]["data"])
     if moduleinst=="error":
@@ -223,7 +234,7 @@ def instantiate_module_from_wasm_file(test,filename,store,registered_modules):
 # used for to parse argument and return values in <test>.json files
 ########################################################################################
 def int2float(N,int_):
-  #return pywebassembly.spec_reinterprett1t2("i"+str(N),'f'+str(N),int_)
+  #return wasm.spec_reinterprett1t2("i"+str(N),'f'+str(N),int_)
   #print("int2float(",N,int_,")")
   bits = bin(int_).lstrip('0b').zfill(N)
   #print(bits)
@@ -306,7 +317,6 @@ def test_opcode_assert_return(test,store,modules,registered_modules,moduleinst):
   if ret == "trap":
     if verbose>1: print("FAILURE trap")
     return "failure"
-  #print("ret",ret)
   #print("test[\"expected\"]",test["expected"])
   if len(ret) != len(test["expected"]):
     print("ret=",ret,len(ret),"   test[\"expected\"]", test["expected"], len(test["expected"]))
@@ -326,16 +336,16 @@ def test_opcode_assert_return(test,store,modules,registered_modules,moduleinst):
       exp = int2float(N,expected_val)
       if verbose>1: print("expected: ",exp,"   actual: ",ret[i])
       #some_float       = 1.0
-      #some_float_bytes = pywebassembly.spec_bytest("f64",some_float)
-      #some_float_back  = pywebassembly.spec_bytest_inv("f64",some_float_bytes)
+      #some_float_bytes = wasm.spec_bytest("f64",some_float)
+      #some_float_back  = wasm.spec_bytest_inv("f64",some_float_bytes)
       #some_float_bin   = [bin(byte).lstrip('0b').zfill(8) for byte in some_float_bytes]
       #print("some_float:",some_float,some_float_bytes, some_float_bin,some_float_back)
       #some_float       = 1.0
-      #some_float_bytes = pywebassembly.spec_bytest("f32",some_float)
-      #some_float_back  = pywebassembly.spec_bytest_inv("f32",some_float_bytes)
+      #some_float_bytes = wasm.spec_bytest("f32",some_float)
+      #some_float_back  = wasm.spec_bytest_inv("f32",some_float_bytes)
       #some_float_bin   = [bin(byte).lstrip('0b').zfill(8) for byte in some_float_bytes]
       #print("some_float:",some_float,some_float_bytes, some_float_bin,some_float_back)
-      if pywebassembly.spec_fsign(ret[i]) != pywebassembly.spec_fsign(exp):
+      if execution.spec_fsign(ret[i]) != execution.spec_fsign(exp):
          return "failure"
       elif math.isnan(ret[i]) and math.isnan(exp):
          return "success"
@@ -343,8 +353,8 @@ def test_opcode_assert_return(test,store,modules,registered_modules,moduleinst):
          return "success"
       elif math.isnan(ret[i]) or math.isnan(exp) or math.isinf(ret[i]) or math.isinf(exp):
          return "failure"
-      retabs = pywebassembly.spec_fabsN(N,ret[i])
-      expabs = pywebassembly.spec_fabsN(N,exp)
+      retabs = execution.spec_fabsN(N,ret[i])
+      expabs = execution.spec_fabsN(N,exp)
       #print("abs:",expabs,retabs)
       if retabs*1.01 < expabs or retabs*0.99 > expabs:
          return "failure"
@@ -438,8 +448,8 @@ def test_opcode_action_invoke(test,store,modules,registered_modules,moduleinst):
   utf8_bytes = bytearray()
   for c in funcname:
     utf8_bytes += bytearray([ord(c)])
-  utf8_bytes = pywebassembly.spec_binary_uN_inv(len(funcname),32) + utf8_bytes
-  _,funcname = pywebassembly.spec_binary_name(utf8_bytes,0)
+  utf8_bytes = binary_format.spec_binary_uN_inv(len(funcname),32) + utf8_bytes
+  _,funcname = binary_format.spec_binary_name(utf8_bytes,0)
   #print("funcname",funcname)
   #get function address
   funcaddr = None
@@ -447,6 +457,8 @@ def test_opcode_action_invoke(test,store,modules,registered_modules,moduleinst):
   #print("moduleinst",moduleinst)
   #print("ok moduleinst",moduleinst)
   #print("test ok",test)
+  #print("OK")
+  #print(moduleinst)
   for export in moduleinst["exports"]:
     #print("export[\"name\"]",export["name"])
     if export["name"] == funcname:
@@ -454,7 +466,7 @@ def test_opcode_action_invoke(test,store,modules,registered_modules,moduleinst):
   if verbose>2: print("funcaddr",funcaddr)
   #print("funcaddr",funcaddr)
   #funcbody = store["funcs"][funcaddr]["code"]["body"]
-  #print(pywebassembly.print_tree_expr(funcbody))
+  #print(wasm.print_tree_expr(funcbody))
   #get args
   args = []
   float_flag = 0
@@ -472,7 +484,7 @@ def test_opcode_action_invoke(test,store,modules,registered_modules,moduleinst):
   #invoke func
   ret = []
   #if not float_flag:
-  _,ret = pywebassembly.invoke_func(store,funcaddr,args)
+  _,ret = wasm.invoke_func(store,funcaddr,args)
   #else:
   #  num_tests_tried-=1
   return ret
@@ -520,7 +532,7 @@ def run_test_file(jsonfilename):
   tests = d["commands"]
   modules = { }		#all moduleinst's indexed by their names, used to call funcs and resolve exports
   registered_modules={}	#all moduleinst's which can be imported from, indexed by their registered name
-  store = pywebassembly.init_store()	#done once and lasts for lifetime of this abstract machine
+  store = wasm.init_store()	#done once and lasts for lifetime of this abstract machine
   modules["spectest"] = instantiate_spectest_module(store)	#module "spectest" is imported from by many tests
   modules["test"] = instantiate_test_module(store)	#module "test" is imported from by many tests
   registered_modules["spectest"] = modules["spectest"]	#register module "spectest" to be import-able

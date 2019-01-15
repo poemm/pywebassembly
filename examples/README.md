@@ -1,23 +1,32 @@
   
+# EXECUTE WASM FILE
+
+**parse_and_exec_wasm.py**: This code parses a wasm file and executes the start function or a given function name. Must supply arguments too.
+
+`python3 parse_and_exec_wasm.py <filename>.wasm funcname arg1 arg2 etc etc`
+
+eg `python3 parse_and_exec_wasm.py fibonacci.wasm fib 10`
 
 # EXPORTS AND IMPORTS
 
 **export_from_mod1_import_to_mod2.py**: This code uses the Embedding API to "spins-up" a VM instance, instantiate a module, registers its exports, instantiates another module which imports from the first module, and invokes its exported function.
 
+`python3 export_from_mod1_import_to_mod2.py`
+
 # BASIC WEBASSEMBLY TRANSFORMATION
 
 **ewasmify.py** is a simple tool for modifying a WebAssembly module's imports and exports to suit one's need.
 
+`python3 ewasmify.py <filename>.wasm`
+
 # MAJOR WEBASSEMBLY TRANSFORMATION
+
 
 **metering.py**: Injects a function call before each sequence of non-control-flow instructions, whose argument is the sum of costs of instructions in the sequence. Also injects helper functions, including the metering function which updates the cycle count and traps when a limit is exceeded.
 
 To run, execute:
 
-
-```
-python3 metering fibonacci.wasm
-```
+`python3 metering fibonacci.wasm` NOTE: This is currently broken and on my todo list. Worked in some older versions. This is difficult to maintain since even small changes to the code affect this file.
 
 
 Before metering (see `fibonacci.wast` for full module, and the original fibonacci function in C).
