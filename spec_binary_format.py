@@ -1226,9 +1226,6 @@ def spec_binary_module(raw):
 # this prints a binary to a filename, maybe we should just return the binary
 def spec_binary_module_inv(mod):
   #print_sections(mod)
-  bytestar = bytearray([])
-  bytestar += bytearray([0x00,0x61,0x73,0x6d]) #magic
-  bytestar += bytearray([0x01,0x00,0x00,0x00]) #version
   typesec   = spec_binary_typesec_inv(mod["types"])
   importsec = spec_binary_importsec_inv(mod["imports"])
   funcsec   = spec_binary_funcsec_inv([e["type"] for e in mod["funcs"]])
@@ -1240,6 +1237,9 @@ def spec_binary_module_inv(mod):
   elemsec   = spec_binary_elemsec_inv(mod["elem"])
   codesec   = spec_binary_codesec_inv([(f["locals"],f["body"]) for f in mod["funcs"]])
   datasec   = spec_binary_datasec_inv(mod["data"])
+  bytestar = bytearray([])
+  bytestar += bytearray([0x00,0x61,0x73,0x6d]) #magic
+  bytestar += bytearray([0x01,0x00,0x00,0x00]) #version
   bytestar += typesec
   bytestar += importsec
   bytestar += funcsec
@@ -1251,18 +1251,4 @@ def spec_binary_module_inv(mod):
   bytestar += elemsec
   bytestar += codesec
   bytestar += datasec
-  """
-  print("typesec",[hex(b) for b in typesec])
-  print("improtsec",[hex(b) for b in importsec])
-  print("funcsec",[hex(b) for b in funcsec])
-  print("tablesec",[hex(b) for b in tablesec])
-  print("memsec",[hex(b) for b in memsec])
-  print("globalsec",[hex(b) for b in globalsec])
-  print("exportsec",[hex(b) for b in exportsec])
-  print("startsec",[hex(b) for b in startsec])
-  print("elemsec",[hex(b) for b in elemsec])
-  print("codesec",[hex(b) for b in codesec])
-  print("len(codesec)",len(codesec))
-  print("datasec",[hex(b) for b in datasec])
-  """
   return bytestar
