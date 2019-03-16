@@ -38,7 +38,7 @@ instr_cost = {
 'get_local':1, 'set_local':1, 'tee_local':1, 'get_global':1, 'set_global':1,
 
 'i32.load':1, 'i64.load':1, 'f32.load':1, 'f64.load':1, 'i32.load8_s':1, 'i32.load8_u':1, 'i32.load16_s':1, 'i32.load16_u':1, 'i64.load8_s':1, 'i64.load8_u':1, 'i64.load16_s':1, 'i64.load16_u':1, 'i64.load32_s':1, 'i64.load32_u':1, 'i32.store':1, 'i64.store':1, 'f32.store':1, 'f64.store':1, 'i32.store8':1, 'i32.store16':1, 'i64.store8':1, 'i64.store16':1, 'i64.store32':1,
-'current_memory':1,'grow_memory':1,
+'memory.size':1,'memory.grow':1,
 
 'i32.const':1, 'i64.const':1, 'f32.const':1, 'f64.const':1,
 
@@ -119,8 +119,7 @@ def inject_helper_functions(mod):
   mod["types"]+=[[['i32'],[]]]
   mod["funcs"]+=[{'type': len(mod["types"])-1, 'locals': ['i32'],
       'body': [['get_global', 0+global_idx_cycles],
-               ['set_local', 1],
-               ['get_global', 0+global_idx_cycles],
+               ['tee_local', 1],
                ['get_local', 0],
                ['i32.sub'],
                ['set_global', 0+global_idx_cycles],
@@ -130,8 +129,7 @@ def inject_helper_functions(mod):
                ['if', [],
                 [
                  ['get_global', 1+global_idx_cycles],
-                 ['set_local', 1],
-                 ['get_global', 1+global_idx_cycles],
+                 ['tee_local', 1],
                  ['i32.const', 1],
                  ['i32.sub'],
                  ['set_global', 1+global_idx_cycles],
@@ -141,8 +139,7 @@ def inject_helper_functions(mod):
                  ['if', [],
                   [
                    ['get_global', 2+global_idx_cycles],
-                   ['set_local', 1],
-                   ['get_global', 2+global_idx_cycles],
+                   ['tee_local', 1],
                    ['i32.const', 1],
                    ['i32.sub'],
                    ['set_global', 2+global_idx_cycles],
@@ -152,8 +149,7 @@ def inject_helper_functions(mod):
                    ['if', [],
                     [
                      ['get_global', 3+global_idx_cycles],
-                     ['set_local', 1],
-                     ['get_global', 3+global_idx_cycles],
+                     ['tee_local', 1],
                      ['i32.const', 1],
                      ['i32.sub'],
                      ['set_global', 3+global_idx_cycles],
@@ -228,14 +224,16 @@ def inject_helper_functions(mod):
     end)
   """
 
-  # to get/set these global variables, we can either export them or helper functions.
-  # but because old versions of Wasm don't allow exporting mutable globals, we offer both with the following if/else
+  # to get/set these global variables, we can export them (or export helper functions, see below)
+  # be careful when exporting mutable globals, since this is a new feature and old implementations don't support it
   if 0: # export globals
     mod["exports"]+=[{'name': 'cycles_remaining0', 'desc': ['global', len(mod["globals"])-4]},
                      {'name': 'cycles_remaining1', 'desc': ['global', len(mod["globals"])-3]},
                      {'name': 'cycles_remaining2', 'desc': ['global', len(mod["globals"])-2]},
                      {'name': 'cycles_remaining3', 'desc': ['global', len(mod["globals"])-1]}]
-  else: # export helper functions
+
+  # export helper functions, should work on all implementations
+  if 1: 
     #inject function to get cycles remaining
     #print_tree_expr(mod["funcs"][-1]["body"])
     mod["types"]+=[[['i32'], ['i32']]]
@@ -393,6 +391,7 @@ def inject_helper_functions(mod):
     (func (;4;) (type 4) (result i32)
       i32.const 4)
     """
+
   #print(mod["types"])
   #print(mod["funcs"])
   #print(mod["exports"])

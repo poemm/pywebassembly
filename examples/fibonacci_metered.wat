@@ -51,8 +51,7 @@
   (func (;1;) (type 1) (param i32)
     (local i32)
     get_global 0
-    set_local 1
-    get_global 0
+    tee_local 1
     get_local 0
     i32.sub
     set_global 0
@@ -61,8 +60,7 @@
     i32.gt_u
     if  ;; label = @1
       get_global 1
-      set_local 1
-      get_global 1
+      tee_local 1
       i32.const 1
       i32.sub
       set_global 1
@@ -71,8 +69,7 @@
       i32.gt_u
       if  ;; label = @2
         get_global 2
-        set_local 1
-        get_global 2
+        tee_local 1
         i32.const 1
         i32.sub
         set_global 2
@@ -81,8 +78,7 @@
         i32.gt_u
         if  ;; label = @3
           get_global 3
-          set_local 1
-          get_global 3
+          tee_local 1
           i32.const 1
           i32.sub
           set_global 3
