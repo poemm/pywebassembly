@@ -190,7 +190,7 @@ function run_wasm_xhr_custom(){
     //create instance, and its callback
     WebAssembly.instantiate(xhr.response, imports).then(module => {
       //get number of ints needed to init max_cycles
-      let numCyclesChunks = module.instance.exports.get_num_max_cycles_chunks();
+      let numCyclesChunks = module.instance.exports.get_num_cycles_remaining_chunks();
       let arr = digitString2ui32Array(max_cycles);
       if(arr.length!=numCyclesChunks){
         if(arr.length<numCyclesChunks){
@@ -204,7 +204,7 @@ function run_wasm_xhr_custom(){
       }
       //set max cycles into globals
       for(let i=0;i<=numCyclesChunks;i++)
-        module.instance.exports.set_max_cycles(i,arr[i]);
+        module.instance.exports.set_cycles_remaining(i,arr[i]);
       //EXECUTE
       try {
         let output = module.instance.exports[funcname](parseInt(arg));  //default is one arg, adjust here for different arguments
@@ -212,7 +212,7 @@ function run_wasm_xhr_custom(){
       document.getElementById("div_results").innerHTML += ' output: ' + output + "<br>";
       //get num cycles remaining from module
       arr_after = []
-      for (let i=0;i<numCyclesChunks;i++) arr_after.push(module.instance.exports["get_max_cycles"](i)>>>0)
+      for (let i=0;i<numCyclesChunks;i++) arr_after.push(module.instance.exports["get_cycles_remaining"](i)>>>0)
       str_after = ui32Array2digitString(arr_after);
       console.log("cycles_remaining:",str_after);
       document.getElementById("div_results").innerHTML += "cycles remaining:"+ str_after+"<br>";

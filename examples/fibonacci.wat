@@ -34,16 +34,3 @@
   (memory (;0;) 1)
   (export "memory" (memory 0))
   (export "fib" (func 0)))
-
-
-(;
-int fib(int n){
-  int a_=1,a=1;
-  for(int i=0;i<n;i++){
-    int tmp=a;
-    a=a+a_;
-    a_=tmp;
-  }
-  return a;  
-}
-;)

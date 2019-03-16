@@ -175,6 +175,7 @@ def type_mem(store, memaddr):
   meminst = store["mems"][memaddr]
   max_ = meminst["max"]
   min_ = len(meminst["data"])//65536  #page size = 64 Ki = 65536 #TODO: is this min OK?
+  return {"min":min_, "max":max_}
 
 def read_mem(store, memaddr, i):
   if len(store["mems"]) <= memaddr: return "error"

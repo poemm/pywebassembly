@@ -24,130 +24,6 @@ sys.path.append('..')
 import pywebassembly as wasm
 
 
-"""
-0000000 6100 6d73 0001 0000 1801 6005 7f01 7f01
-0000010 0160 007f 0160 017f 607f 7f02 007f 0060
-0000020 7f01 0603 0005 0201 0403 0404 7001 0000
-0000030 0305 0001 0601 0415 017f 0041 7f0b 4101
-0000040 0b00 017f 0041 7f0b 4101 0b00 4e07 0605
-0000050 656d 6f6d 7972 0002 6603 6269 0000 670e
-0000060 7465 6d5f 7861 635f 6379 656c 0073 0e02
-0000070 6573 5f74 616d 5f78 7963 6c63 7365 0300
-0000080 6719 7465 6e5f 6d75 6d5f 7861 635f 6379
-0000090 656c 5f73 6863 6e75 736b 0400 f90a 0501
-
-00000a0 0153 7f03 0341 0110 0141 0121 4002 0441
-00000b0 0110 0020 0141 0d48 4100 1005 4101 2101
-00000c0 4103 2100 0302 4140 100d 2001 2002 6a03
-00000d0 0121 0320 0221 0120 0321 0020 7f41 226a
-00000e0 0d00 4100 1001 0b01 0141 0110 410b 1002
-00000f0 2001 0b01 014d 7f01 0023 0121 0023 0020
-0000100 246b 2300 2000 4b01 2304 2101 2301 4101
-0000110 6b01 0124 0123 0120 044b 0223 0121 0223
-0000120 0141 246b 2302 2002 4b01 2304 2103 2301
-0000130 4103 6b01 0324 0323 0120 044b 0b00 0b0b
-0000140 0b0b 0025 0020 0041 0446 237f 0500 0020
-0000150 0141 0446 237f 0501 0020 0241 0446 237f
-0000160 0502 0323 0b0b 0b0b 002a 0020 0041 0446
-0000170 0120 0024 2005 4100 4601 2004 2401 0501
-0000180 0020 0241 0446 0120 0224 2005 2401 0b03
-0000190 0b0b 040b 4100 0b04                    
-0000198
-user@user:~/mnt/ethereum/repos/pywebassembly/poemm-pywebassembly/examples$ 
-user@user:~/mnt/ethereum/repos/pywebassembly/poemm-pywebassembly/examples$ 
-user@user:~/mnt/ethereum/repos/pywebassembly/poemm-pywebassembly/examples$ 
-user@user:~/mnt/ethereum/repos/pywebassembly/poemm-pywebassembly/examples$ hexdump fibonacci_metered.wasm_orig 
-0000000 6100 6d73 0001 0000 1801 6005 7f01 7f01
-0000010 0160 007f 0160 017f 607f 7f02 007f 0060
-0000020 7f01 0603 0005 0201 0403 0404 7001 0000
-0000030 0305 0001 0601 0415 017f 0041 7f0b 4101
-0000040 0b00 017f 0041 7f0b 4101 0b00 4e07 0605
-0000050 656d 6f6d 7972 0002 6603 6269 0000 670e
-0000060 7465 6d5f 7861 635f 6379 656c 0073 0e02
-0000070 6573 5f74 616d 5f78 7963 6c63 7365 0300
-0000080 6719 7465 6e5f 6d75 6d5f 7861 635f 6379
-0000090 656c 5f73 6863 6e75 736b 0400 800a 0502
-
-00000a0 0153 7f03 0341 0110 0141 0121 4002 0441
-00000b0 0110 0020 0141 0d48 4100 1005 4101 2101
-00000c0 4103 2100 0302 4140 100d 2001 2002 6a03
-00000d0 0121 0320 0221 0120 0321 0020 7f41 226a
-00000e0 0d00 4100 1001 0b01 0141 0110 410b 1002
-00000f0 2001 0b01 0151 7f01 0023 0121 0023 0020
-0000100 246b 2300 2000 4b01 4004 0123 0121 0123
-0000110 0141 246b 2301 2001 4b01 4004 0223 0121
-0000120 0223 0141 246b 2302 2002 4b01 4004 0323
-0000130 0121 0323 0141 246b 2303 2003 4b01 4004
-0000140 0b00 0b0b 0b0b 0025 0020 0041 0446 237f
-0000150 0500 0020 0141 0446 237f 0501 0020 0241
-0000160 0446 237f 0502 0323 0b0b 0b0b 002d 0020
-0000170 0041 0446 2040 2401 0500 0020 0141 0446
-0000180 2040 2401 0501 0020 0241 0446 2040 2401
-0000190 0502 0120 0324 0b0b 0b0b 0004 0441 000b
-000019f
-
-
-
-
-
-
-0000090 656c 5f73 6863 6e75 736b 0400 f90a 0501
-0000090 656c 5f73 6863 6e75 736b 0400 800a 0502
-
-00000a0 0153 7f03 0341 0110 0141 0121 4002 0441
-00000a0 0153 7f03 0341 0110 0141 0121 4002 0441
-
-00000b0 0110 0020 0141 0d48 4100 1005 4101 2101
-00000b0 0110 0020 0141 0d48 4100 1005 4101 2101
-
-00000c0 4103 2100 0302 4140 100d 2001 2002 6a03
-00000c0 4103 2100 0302 4140 100d 2001 2002 6a03
-
-00000d0 0121 0320 0221 0120 0321 0020 7f41 226a
-00000d0 0121 0320 0221 0120 0321 0020 7f41 226a
-
-00000e0 0d00 4100 1001 0b01 0141 0110 410b 1002
-00000e0 0d00 4100 1001 0b01 0141 0110 410b 1002
-
-00000f0 2001 0b01 014d 7f01 0023 0121 0023 0020
-00000f0 2001 0b01 0151 7f01 0023 0121 0023 0020
-
-                       ____
-0000100 246b 2300 2000 4b01 2304 2101 2301 4101
-0000100 246b 2300 2000 4b01 4004 0123 0121 0123
-
-0000110 6b01 0124 0123 0120 044b 0223 0121 0223
-0000110 0141 246b 2301 2001 4b01 4004 0223 0121
-
-0000120 0141 246b 2302 2002 4b01 2304 2103 2301
-0000120 0223 0141 246b 2302 2002 4b01 4004 0323
-
-0000130 4103 6b01 0324 0323 0120 044b 0b00 0b0b
-0000130 0121 0323 0141 246b 2303 2003 4b01 4004
-
-0000140 0b0b 0025 0020 0041 0446 237f 0500 0020
-0000140 0b00 0b0b 0b0b 0025 0020 0041 0446 237f
-
-0000150 0141 0446 237f 0501 0020 0241 0446 237f
-0000150 0500 0020 0141 0446 237f 0501 0020 0241
-
-0000160 0502 0323 0b0b 0b0b 002a 0020 0041 0446
-0000160 0446 237f 0502 0323 0b0b 0b0b 002d 0020
-
-0000170 0120 0024 2005 4100 4601 2004 2401 0501
-0000170 0041 0446 2040 2401 0500 0020 0141 0446
-
-0000180 0020 0241 0446 0120 0224 2005 2401 0b03
-0000180 2040 2401 0501 0020 0241 0446 2040 2401
-
-0000190 0b0b 040b 4100 0b04                    
-0000190 0502 0120 0324 0b0b 0b0b 0004 0441 000b
-
-user@user:~/mnt/ethereum/repos/pywebassembly/poemm-pywebassembly/examples$ hexdump fibonacci_metered.wasm_orig 
-"""
-
-
-
 
 
 #cost of each intstruction
@@ -234,10 +110,11 @@ def inject_metering_expr(expr,meteringFuncIdx):
 def inject_helper_functions(mod):
   #inject globals for cycles_remaining
   global_idx_cycles = len(mod["globals"])
-  mod["globals"]+=[{'type': ['var', 'i32'], 'init': [['i32.const', 0],["end"]]},
-                   {'type': ['var', 'i32'], 'init': [['i32.const', 0],["end"]]},
-                   {'type': ['var', 'i32'], 'init': [['i32.const', 0],["end"]]},
-                   {'type': ['var', 'i32'], 'init': [['i32.const', 0],["end"]]}]
+  mod["globals"]+=[{'type': ['var', 'i32'], 'init': [['i32.const', 2^32-1],["end"]]},
+                   {'type': ['var', 'i32'], 'init': [['i32.const', 2^32-1],["end"]]},
+                   {'type': ['var', 'i32'], 'init': [['i32.const', 2^32-1],["end"]]},
+                   {'type': ['var', 'i32'], 'init': [['i32.const', 2^32-1],["end"]]}]
+
   #inject function to perform metering
   mod["types"]+=[[['i32'],[]]]
   mod["funcs"]+=[{'type': len(mod["types"])-1, 'locals': ['i32'],
@@ -350,38 +227,50 @@ def inject_helper_functions(mod):
       end
     end)
   """
-  #inject function to get cycles remaining
-  #print_tree_expr(mod["funcs"][-1]["body"])
-  mod["types"]+=[[['i32'], ['i32']]]
-  mod["funcs"]+=[{'type': len(mod["types"])-1, 'locals': [],
-        'body': [['get_local', 0],
-                 ['i32.const', 0],
-                 ['i32.eq'],
-                 ['if', 'i32',
-                  [
-                   ['get_global', 0+global_idx_cycles],
-                   ['else']
-                  ],
-                  [
-                   ['get_local', 0],
-                   ['i32.const', 1],
+
+  # to get/set these global variables, we can either export them or helper functions.
+  # but because old versions of Wasm don't allow exporting mutable globals, we offer both with the following if/else
+  if 0: # export globals
+    mod["exports"]+=[{'name': 'cycles_remaining0', 'desc': ['global', len(mod["globals"])-4]},
+                     {'name': 'cycles_remaining1', 'desc': ['global', len(mod["globals"])-3]},
+                     {'name': 'cycles_remaining2', 'desc': ['global', len(mod["globals"])-2]},
+                     {'name': 'cycles_remaining3', 'desc': ['global', len(mod["globals"])-1]}]
+  else: # export helper functions
+    #inject function to get cycles remaining
+    #print_tree_expr(mod["funcs"][-1]["body"])
+    mod["types"]+=[[['i32'], ['i32']]]
+    mod["funcs"]+=[{'type': len(mod["types"])-1, 'locals': [],
+          'body': [['get_local', 0],
+                   ['i32.const', 0],
                    ['i32.eq'],
                    ['if', 'i32',
                     [
-                     ['get_global', 1+global_idx_cycles],
+                     ['get_global', 0+global_idx_cycles],
                      ['else']
                     ],
                     [
                      ['get_local', 0],
-                     ['i32.const', 2],
+                     ['i32.const', 1],
                      ['i32.eq'],
                      ['if', 'i32',
                       [
-                       ['get_global', 2+global_idx_cycles],
+                       ['get_global', 1+global_idx_cycles],
                        ['else']
                       ],
                       [
-                       ['get_global', 3+global_idx_cycles],
+                       ['get_local', 0],
+                       ['i32.const', 2],
+                       ['i32.eq'],
+                       ['if', 'i32',
+                        [
+                         ['get_global', 2+global_idx_cycles],
+                         ['else']
+                        ],
+                        [
+                         ['get_global', 3+global_idx_cycles],
+                         ['end']
+                        ]
+                       ],
                        ['end']
                       ]
                      ],
@@ -390,73 +279,73 @@ def inject_helper_functions(mod):
                    ],
                    ['end']
                   ]
-                 ],
-                 ['end']
-                ]
-              }]
-  #print("added func:")
-  #print(mod["funcs"][-1]["body"])
-  mod["exports"]+=[{'name': 'get_max_cycles', 'desc': ['func', len(mod["funcs"])-1]}]
-  """
-  (func (;2;) (type 2) (param i32) (result i32)
-    get_local 0
-    i32.const 0
-    i32.eq
-    if (result i32)  ;; label = @1
-      get_global 0
-    else
+                }]
+    #print("added func:")
+    #print(mod["funcs"][-1]["body"])
+    mod["exports"]+=[{'name': 'get_cycles_remaining', 'desc': ['func', len(mod["funcs"])-1]}]
+    """
+    (func (;2;) (type 2) (param i32) (result i32)
       get_local 0
-      i32.const 1
+      i32.const 0
       i32.eq
-      if (result i32)  ;; label = @2
-        get_global 1
+      if (result i32)  ;; label = @1
+        get_global 0
       else
         get_local 0
-        i32.const 2
+        i32.const 1
         i32.eq
-        if (result i32)  ;; label = @3
-          get_global 2
+        if (result i32)  ;; label = @2
+          get_global 1
         else
-          get_global 3
+          get_local 0
+          i32.const 2
+          i32.eq
+          if (result i32)  ;; label = @3
+            get_global 2
+          else
+            get_global 3
+          end
         end
-      end
-    end)
-  """
-  #inject function to set max_cycles
-  mod["types"]+=[[['i32','i32'],[]]]
-  mod["funcs"]+=[{'type': len(mod["types"])-1, 'locals': [],
-        'body': [['get_local', 0],
-                 ['i32.const', 0],
-                 ['i32.eq',],
-                 ['if', [],
-                  [
-                   ['get_local', 1],
-                   ['set_global', 0+global_idx_cycles],
-                   ['else',]
-                  ],
-                  [
-                   ['get_local', 0],
-                   ['i32.const', 1],
+      end)
+    """
+    #inject function to set max_cycles
+    mod["types"]+=[[['i32','i32'],[]]]
+    mod["funcs"]+=[{'type': len(mod["types"])-1, 'locals': [],
+          'body': [['get_local', 0],
+                   ['i32.const', 0],
                    ['i32.eq',],
                    ['if', [],
                     [
                      ['get_local', 1],
-                     ['set_global', 1+global_idx_cycles],
+                     ['set_global', 0+global_idx_cycles],
                      ['else',]
                     ],
                     [
                      ['get_local', 0],
-                     ['i32.const', 2],
+                     ['i32.const', 1],
                      ['i32.eq',],
                      ['if', [],
                       [
                        ['get_local', 1],
-                       ['set_global', 2+global_idx_cycles],
+                       ['set_global', 1+global_idx_cycles],
                        ['else',]
                       ],
                       [
-                       ['get_local', 1],
-                       ['set_global', 3+global_idx_cycles],
+                       ['get_local', 0],
+                       ['i32.const', 2],
+                       ['i32.eq',],
+                       ['if', [],
+                        [
+                         ['get_local', 1],
+                         ['set_global', 2+global_idx_cycles],
+                         ['else',]
+                        ],
+                        [
+                         ['get_local', 1],
+                         ['set_global', 3+global_idx_cycles],
+                         ['end',]
+                        ]
+                       ],
                        ['end',]
                       ]
                      ],
@@ -465,48 +354,45 @@ def inject_helper_functions(mod):
                    ],
                    ['end',]
                   ]
-                 ],
-                 ['end',]
-                ]
-              }]
-  mod["exports"]+=[{'name': 'set_max_cycles', 'desc': ['func', len(mod["funcs"])-1]}]
-  """
-  (func (;3;) (type 3) (param i32 i32)
-    get_local 0
-    i32.const 0
-    i32.eq
-    if  ;; label = @1
-      get_local 1
-      set_global 0
-    else
+                }]
+    mod["exports"]+=[{'name': 'set_cycles_remaining', 'desc': ['func', len(mod["funcs"])-1]}]
+    """
+    (func (;3;) (type 3) (param i32 i32)
       get_local 0
-      i32.const 1
+      i32.const 0
       i32.eq
-      if  ;; label = @2
+      if  ;; label = @1
         get_local 1
-        set_global 1
+        set_global 0
       else
         get_local 0
-        i32.const 2
+        i32.const 1
         i32.eq
-        if  ;; label = @3
+        if  ;; label = @2
           get_local 1
-          set_global 2
+          set_global 1
         else
-          get_local 1
-          set_global 3
+          get_local 0
+          i32.const 2
+          i32.eq
+          if  ;; label = @3
+            get_local 1
+            set_global 2
+          else
+            get_local 1
+            set_global 3
+          end
         end
-      end
-    end)
-  """
-  #inject function to get num chunks for max_cycles
-  mod["types"]+=[[[],['i32']]]
-  mod["funcs"]+=[{'type': len(mod["types"])-1, 'locals': [], 'body': [['i32.const', 4],['end',]]}]
-  mod["exports"]+=[{'name': 'get_num_max_cycles_chunks', 'desc': ['func', len(mod["funcs"])-1]}]
-  """
-  (func (;4;) (type 4) (result i32)
-    i32.const 4)
-  """
+      end)
+    """
+    #inject function to get num chunks for max_cycles
+    mod["types"]+=[[[],['i32']]]
+    mod["funcs"]+=[{'type': len(mod["types"])-1, 'locals': [], 'body': [['i32.const', 4],['end',]]}]
+    mod["exports"]+=[{'name': 'get_num_cycles_remaining_chunks', 'desc': ['func', len(mod["funcs"])-1]}]
+    """
+    (func (;4;) (type 4) (result i32)
+      i32.const 4)
+    """
   #print(mod["types"])
   #print(mod["funcs"])
   #print(mod["exports"])
