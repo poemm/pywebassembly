@@ -18,4 +18,5 @@
   {"type": "module", "line": 80, "filename": "start.wast.5.wasm"}, 
   {"type": "module", "line": 86, "filename": "start.wast.6.wasm"}, 
   {"type": "module", "line": 92, "filename": "start.wast.7.wasm"}, 
-  {"type": "assert_uninstantiable", "line": 98, "filename": "start.wast.8.wasm", "text": "unreachable", "module_type": "binary"}]}
+  {"type": "assert_uninstantiable", "line": 98, "filename": "start.wast.8.wasm", "text": "unreachable", "module_type": "binary"}, 
+  {"type": "assert_malformed", "line": 103, "filename": "start.wast.9.wat", "text": "multiple start sections", "module_type": "text"}]}

@@ -5,11 +5,11 @@
 
 PyWebAssembly closely follows [WebAssembly Specification, Release 1.0](https://webassembly.github.io/spec/core/_download/WebAssembly.pdf) (pdf). Each section of code references its definition in the Spec document.
 
-`spec_structure.py` closely follows chapter 2.
-`spec_validation.py` closely follows chapter 3 and 7.3.
-`spec_execution.py`closely follows chapter 4.
-`spec_binary_format.py` closely follows chapter 5.
-`pywebassembly.py` closely follows chapter 7.1.
+- `spec_structure.py` closely follows chapter 2.
+- `spec_validation.py` closely follows chapter 3 and 7.3.
+- `spec_execution.py`closely follows chapter 4.
+- `spec_binary_format.py` closely follows chapter 5.
+- `pywebassembly.py` closely follows chapter 7.1.
 
 Closely following the linked Spec document is useful for the following reasons.
  - The Spec document can be used as a user's manual.
@@ -18,9 +18,9 @@ Closely following the linked Spec document is useful for the following reasons.
  - PyWebAssembly does not introduce invariants or design decisions that are not in the Spec document. There are many subtleties in the 150 page Spec document, and invariants may be difficult to maintain, as I have learned. So it may be naive to over-engineer something beyond the spec.
  - Implementing the Spec document has allowed me to find errors and submit fixes to the Spec document, and I have more fixes coming.
 
-Another design goal is for PyWebAssembly to be easily used for prototyping changes to the WebAssembly spec. PyWebAssembly is _NOT_ meant to by "Pythonic" or fast. Instead, it is meant to be easily translated to other languages -- a C++ version is under development.
+Another design goal is for PyWebAssembly to be easily used for prototyping changes to the WebAssembly spec. PyWebAssembly is _NOT_ meant to by "Pythonic" or fast.
 
-**API**: It may be possible to limit the API to functions defined in the WebAssembly Spec section 7.1 Embedding. These functions are implemented in pywebassembly.py, but please reference the spec for details. The only awkward part is that `invoke_func` requires specifying `i32.const`, `i64.const`, `f32.const`, or `f64.const` with each argument -- we are considering deviating from the spec and relaxing this requirement.
+**API**: The user should only interact with the Wasm API defined in the WebAssembly Spec section 7.1 Embedding. These functions are implemented in pywebassembly.py, but please reference the spec for details. The only awkward part is that `invoke_func` requires specifying `i32.const`, `i64.const`, `f32.const`, or `f64.const` with each argument -- we are considering deviating from the spec and relaxing this requirement.
 
 The following code "spins-up" a VM instance, instantiates a module, and invokes an exported function. See the `examples` directory for more examples.
 
@@ -57,7 +57,7 @@ Example uses of PyWebAssembly.
 
 ## tests/
 
-Testing of PyWebAssembly.
+Testing of PyWebAssembly against the spec tests.
 
 
 # Notes and Conventions.

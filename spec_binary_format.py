@@ -412,7 +412,7 @@ def spec_binary_name_inv(chars):
       name_bytes += bytes([(c>>18)+0xf0,((c>>12)&0b111111)+0x80,((c>>6)&0b111111)+0x80,(c&0b111111)+0x80])
     else:
       return None #error
-  return bytearray([len(name_bytes)])+name_bytes
+  return spec_binary_uN_inv(len(name_bytes),64)+name_bytes
 
 
 ###########
@@ -1146,74 +1146,99 @@ def spec_binary_module(raw):
   if version!=[x for x in raw[idx:idx+4]]: raise Exception("malformed")
   idx+=4
 
+  customsec = []
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
 
-  idx,functypestar=spec_binary_typesec(raw,idx,0)
-  if verbose: print("functypestar",functypestar)
-
-  while idx<len(raw) and raw[idx]==0:
-    idx,customsec = spec_binary_customsec(raw,idx,0)
-
-  idx,importstar=spec_binary_importsec(raw,idx,0)
-  if verbose: print("importstar",importstar)
-
-  while idx<len(raw) and raw[idx]==0:
-    idx,customsec = spec_binary_customsec(raw,idx,0)
-
-  idx,typeidxn=spec_binary_funcsec(raw,idx,0)
-  if verbose: print("typeidxn",typeidxn)
+  functypestar = []
+  if idx<len(raw) and raw[idx]==1:
+    idx,functypestar=spec_binary_typesec(raw,idx,0)
+    if verbose: print("functypestar",functypestar)
 
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
 
-  idx,tablestar=spec_binary_tablesec(raw,idx,0)
-  if verbose: print("tablestar",tablestar)
+  importstar = []
+  if idx<len(raw) and raw[idx]==2:
+    idx,importstar=spec_binary_importsec(raw,idx,0)
+    if verbose: print("importstar",importstar)
 
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
 
-  idx,memstar=spec_binary_memsec(raw,idx,0)
-  if verbose: print("memstar",memstar)
+  typeidxn = []
+  if idx<len(raw) and raw[idx]==3:
+    idx,typeidxn=spec_binary_funcsec(raw,idx,0)
+    if verbose: print("typeidxn",typeidxn)
 
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
 
-  idx,globalstar=spec_binary_globalsec(raw,idx,0)
-  if verbose: print("globalstar",globalstar)
+  tablestar = []
+  if idx<len(raw) and raw[idx]==4:
+    idx,tablestar=spec_binary_tablesec(raw,idx,0)
+    if verbose: print("tablestar",tablestar)
 
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
 
-  idx,exportstar=spec_binary_exportsec(raw,idx,0)
-  if verbose: print("exportstar",exportstar)
+  memstar = []
+  if idx<len(raw) and raw[idx]==5:
+    idx,memstar=spec_binary_memsec(raw,idx,0)
+    if verbose: print("memstar",memstar)
 
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
 
-  idx,startq=spec_binary_startsec(raw,idx,0)
-  if verbose: print("startq",startq)
+  globalstar = []
+  if idx<len(raw) and raw[idx]==6:
+    idx,globalstar=spec_binary_globalsec(raw,idx,0)
+    if verbose: print("globalstar",globalstar)
 
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
 
-  idx,elemstar=spec_binary_elemsec(raw,idx,0)
-  if verbose: print("elemstar",elemstar)
+  exportstar = []
+  if idx<len(raw) and raw[idx]==7:
+    idx,exportstar=spec_binary_exportsec(raw,idx,0)
+    if verbose: print("exportstar",exportstar)
 
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
 
-  idx,coden=spec_binary_codesec(raw,idx,0)
-  if verbose: print("coden",coden)
+  startq = []
+  if idx<len(raw) and raw[idx]==8:
+    idx,startq=spec_binary_startsec(raw,idx,0)
+    if verbose: print("startq",startq)
 
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
 
-  idx,datastar=spec_binary_datasec(raw,idx,0)
-  if verbose: print("datastar",datastar)
+  elemstar = []
+  if idx<len(raw) and raw[idx]==9:
+    idx,elemstar=spec_binary_elemsec(raw,idx,0)
+    if verbose: print("elemstar",elemstar)
 
   while idx<len(raw) and raw[idx]==0:
     idx,customsec = spec_binary_customsec(raw,idx,0)
+
+  coden = []
+  if idx<len(raw) and raw[idx]==10:
+    idx,coden=spec_binary_codesec(raw,idx,0)
+    if verbose: print("coden",coden)
+
+  while idx<len(raw) and raw[idx]==0:
+    idx,customsec = spec_binary_customsec(raw,idx,0)
+
+  datastar = []
+  if idx<len(raw) and raw[idx]==11:
+    idx,datastar=spec_binary_datasec(raw,idx,0)
+    if verbose: print("datastar",datastar)
+
+  while idx<len(raw) and raw[idx]==0:
+    idx,customsec = spec_binary_customsec(raw,idx,0)
+
+  if len(raw)!=idx: raise Exception("malformed")
 
   if len(typeidxn)!=len(coden): raise Exception("malformed")
 

@@ -70,4 +70,7 @@
   {"type": "assert_return", "line": 209, "action": {"type": "invoke", "field": "i64_load32_s", "args": [{"type": "i64", "value": "18364758543954109763"}]}, "expected": [{"type": "i64", "value": "1446274371"}]}, 
   {"type": "assert_return", "line": 210, "action": {"type": "invoke", "field": "i64_load32_s", "args": [{"type": "i64", "value": "3771275841602506223"}]}, "expected": [{"type": "i64", "value": "18446744071976963567"}]}, 
   {"type": "assert_return", "line": 211, "action": {"type": "invoke", "field": "i64_load32_u", "args": [{"type": "i64", "value": "18364758543954109763"}]}, "expected": [{"type": "i64", "value": "1446274371"}]}, 
-  {"type": "assert_return", "line": 212, "action": {"type": "invoke", "field": "i64_load32_u", "args": [{"type": "i64", "value": "3771275841602506223"}]}, "expected": [{"type": "i64", "value": "2562379247"}]}]}
+  {"type": "assert_return", "line": 212, "action": {"type": "invoke", "field": "i64_load32_u", "args": [{"type": "i64", "value": "3771275841602506223"}]}, "expected": [{"type": "i64", "value": "2562379247"}]}, 
+  {"type": "assert_malformed", "line": 216, "filename": "memory.wast.26.wat", "text": "duplicate memory", "module_type": "text"}, 
+  {"type": "assert_malformed", "line": 220, "filename": "memory.wast.27.wat", "text": "duplicate memory", "module_type": "text"}, 
+  {"type": "assert_malformed", "line": 224, "filename": "memory.wast.28.wat", "text": "duplicate memory", "module_type": "text"}]}

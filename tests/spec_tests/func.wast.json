@@ -122,4 +122,10 @@
   {"type": "assert_malformed", "line": 647, "filename": "func.wast.46.wat", "text": "unexpected token", "module_type": "text"}, 
   {"type": "assert_malformed", "line": 651, "filename": "func.wast.47.wat", "text": "unexpected token", "module_type": "text"}, 
   {"type": "assert_malformed", "line": 655, "filename": "func.wast.48.wat", "text": "unexpected token", "module_type": "text"}, 
-  {"type": "assert_malformed", "line": 659, "filename": "func.wast.49.wat", "text": "unexpected token", "module_type": "text"}]}
+  {"type": "assert_malformed", "line": 659, "filename": "func.wast.49.wat", "text": "unexpected token", "module_type": "text"}, 
+  {"type": "assert_malformed", "line": 665, "filename": "func.wast.50.wat", "text": "duplicate func", "module_type": "text"}, 
+  {"type": "assert_malformed", "line": 669, "filename": "func.wast.51.wat", "text": "duplicate func", "module_type": "text"}, 
+  {"type": "assert_malformed", "line": 673, "filename": "func.wast.52.wat", "text": "duplicate func", "module_type": "text"}, 
+  {"type": "assert_malformed", "line": 678, "filename": "func.wast.53.wat", "text": "duplicate local", "module_type": "text"}, 
+  {"type": "assert_malformed", "line": 680, "filename": "func.wast.54.wat", "text": "duplicate local", "module_type": "text"}, 
+  {"type": "assert_malformed", "line": 682, "filename": "func.wast.55.wat", "text": "duplicate local", "module_type": "text"}]}

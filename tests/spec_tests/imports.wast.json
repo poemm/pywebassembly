@@ -146,4 +146,6 @@
   {"type": "assert_malformed", "line": 556, "filename": "imports.wast.113.wat", "text": "import after memory", "module_type": "text"}, 
   {"type": "assert_malformed", "line": 560, "filename": "imports.wast.114.wat", "text": "import after memory", "module_type": "text"}, 
   {"type": "assert_malformed", "line": 564, "filename": "imports.wast.115.wat", "text": "import after memory", "module_type": "text"}, 
-  {"type": "assert_unlinkable", "line": 572, "filename": "imports.wast.116.wasm", "text": "unknown import", "module_type": "binary"}]}
+  {"type": "module", "line": 571, "filename": "imports.wast.116.wasm"}, 
+  {"type": "register", "line": 572, "as": "not wasm"}, 
+  {"type": "assert_unlinkable", "line": 574, "filename": "imports.wast.117.wasm", "text": "unknown import", "module_type": "binary"}]}

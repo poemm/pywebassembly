@@ -1938,7 +1938,10 @@ def spec_instantiate(S,module,externvaln):
   ret = None
   if module["start"]:
     funcaddr = moduleinst["funcaddrs"][ module["start"]["func"] ]
-    ret = spec_invoke(S,funcaddr,[])
+    try:
+      ret = spec_invoke(S,funcaddr,[])
+    except Exception as e:
+      raise Exception("uninstantiable")
   return S,F,ret
 
 

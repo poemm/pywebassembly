@@ -176,30 +176,11 @@ def instantiate_module_from_wasm_file(test,filename,store,registered_modules):
     #memoryview doesn't make copy, bytearray may require copy
     wasmbytes = memoryview(f.read())
     module = wasm.decode_module(wasmbytes)
-    #module = pywebassembly.decode_module(wasmbytes)
-    #print("module",module)
     if module=="malformed": return None,"malformed"
     #validate
     ret = wasm.validate_module(module)
-    #print("OKOK")
-    #print(module)
-    #ret = pywebassembly.validate_module(module)
-    #print("valid:",ret)
     if type(ret)==str and ret[:14]=="error: invalid":
-      #print(ret)
-      #print(test["text"])
-      #if ret=="error: invalid: pop_opd":
-      #  #print(test["text"])
-      #  if test["text"] != "type mismatch":
-      #    print("#######################################################")
-      #    print(test["text"])
-      #    print(ret)
-      #if ret=="pop_opd2" and test["text"]!="type mismatch":
-      #  print("#######################################################")
       return None,"invalid"
-    #if test["type"]=="assert_invalid" and ret!="error: invalid": #TODO remove this
-    #  print("INVALID MISSED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",test)
-    #  return None,"invalid"
     #imports preparation
     externvalstar = []
     #print("module",filename,module)
@@ -207,23 +188,14 @@ def instantiate_module_from_wasm_file(test,filename,store,registered_modules):
       if import_["module"] not in registered_modules: return store,"unlinkable"	#error: module name doesn't exist
       importmoduleinst = registered_modules[import_["module"]]
       externval = None
-      #print("importmoduleinst",importmoduleinst)
-      #for key in importmoduleinst:
-      #  print(key,importmoduleinst[key])
       for export in importmoduleinst["exports"]:
         if export["name"] == import_["name"]:
           externval = export["value"]
       if externval == None: return store,"unlinkable"	#error: export name doesn't exist
       if externval[0] != import_["desc"][0]: return store,"unlinkable"	#error: import type (func, table, mem, globa) doesn't match
       externvalstar += [externval]
-    #print("store",store)
-    #print("module",module)
-    #print("externvalstar",externvalstar)
     store,moduleinst,ret = wasm.instantiate_module(store,module,externvalstar)
-    #print("moduleinst",moduleinst)
-    #print(store["mems"][0]["data"])
     if moduleinst=="error":
-      #print("instantiate_module_from_wasm_file",moduleinst,ret)
       return store,ret #ret is the actual error, eg "unlinkable"
   return store,moduleinst
 
@@ -241,13 +213,10 @@ def int2float(N,int_):
   bytes_ = bytearray()
   for i in range(len(bits)//8):
     bytes_ += bytearray( [int(bits[8*i:8*(i+1)],2)] )
-  #print(bytes_)
-  #bytes_ = bytearray(reversed(bytes_))
   if N==32:
     value = struct.unpack('!f',bytes_)[0]
   if N==64:
     value = struct.unpack('!d',bytes_)[0]
-  #print(value)
   return value
 
 
@@ -265,12 +234,13 @@ def test_opcode_module(test,store,modules,registered_modules):
   moduleinst=None
   if "filename" in test:
     store,moduleinst = instantiate_module_from_wasm_file(test,dir_+test["filename"],store,registered_modules)
+    #print("test_opcode_module()",moduleinst)
     if moduleinst=="malformed": return store,"malformed"
     if moduleinst=="invalid": return store,"invalid"
+    if moduleinst=="uninstantiable": return store,"uninstantiable"
     if moduleinst and "name" in test:
       modules[test["name"]] = moduleinst
   if verbose>1 and moduleinst==None: print("could not instantiate")
-  #print("moduleinst",moduleinst)
   return store,moduleinst
 
 
@@ -303,6 +273,8 @@ def test_opcode_assertion(test,store,modules,registered_modules,moduleinst):
     ret = test_opcode_assert_invalid(test,store,modules,registered_modules,moduleinst)
   elif test["type"] == "assert_unlinkable":
     ret = test_opcode_assert_unlinkable(test,store,modules,registered_modules,moduleinst)
+  elif test["type"] == "assert_uninstantiable":
+    ret = test_opcode_assert_uninstantiable(test,store,modules,registered_modules,moduleinst)
   elif test["type"] == "assert_exhaustion":
     ret = test_opcode_assert_exhaustion(test,store,modules,registered_modules,moduleinst)
   else:
@@ -316,48 +288,42 @@ def test_opcode_assert_return(test,store,modules,registered_modules,moduleinst):
   if verbose>2: print("results:",ret)
   if ret == "trap":
     if verbose>1: print("FAILURE trap")
-    return "failure"
+    return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   #print("test[\"expected\"]",test["expected"])
   if len(ret) != len(test["expected"]):
     print("ret=",ret,len(ret),"   test[\"expected\"]", test["expected"], len(test["expected"]))
     if verbose>1: print("FAILURE different number of expected and returned values")
-    return "failure"
+    return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   if len(ret)==0 and len(test["expected"]) == 0:
     return "success"
   for i in range(len(ret)):
-    expected_val = int(test["expected"][i]["value"])
+    #print(test["expected"][i]["value"])
+    if test["expected"][i]["value"] in {'nan:canonical', 'nan:arithmetic'}:
+      expected_val = 4286578688 # = int("11111111100000000000000000000000",2)
+    else:
+      expected_val = int(test["expected"][i]["value"])
     expected_type = test["expected"][i]["type"]
     if expected_type in {'i32','i64'}:
       if verbose>1: print("expected: ",expected_val,"   actual: ",ret[i])
       if ret[i] != expected_val:
-        return "failure"
+        return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     elif expected_type in {'f32','f64'}:
       N = int(expected_type[1:])
       exp = int2float(N,expected_val)
       if verbose>1: print("expected: ",exp,"   actual: ",ret[i])
-      #some_float       = 1.0
-      #some_float_bytes = wasm.spec_bytest("f64",some_float)
-      #some_float_back  = wasm.spec_bytest_inv("f64",some_float_bytes)
-      #some_float_bin   = [bin(byte).lstrip('0b').zfill(8) for byte in some_float_bytes]
-      #print("some_float:",some_float,some_float_bytes, some_float_bin,some_float_back)
-      #some_float       = 1.0
-      #some_float_bytes = wasm.spec_bytest("f32",some_float)
-      #some_float_back  = wasm.spec_bytest_inv("f32",some_float_bytes)
-      #some_float_bin   = [bin(byte).lstrip('0b').zfill(8) for byte in some_float_bytes]
-      #print("some_float:",some_float,some_float_bytes, some_float_bin,some_float_back)
       if execution.spec_fsign(ret[i]) != execution.spec_fsign(exp):
-         return "failure"
+         return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       elif math.isnan(ret[i]) and math.isnan(exp):
          return "success"
       elif math.isinf(ret[i]) and math.isinf(exp):
          return "success"
       elif math.isnan(ret[i]) or math.isnan(exp) or math.isinf(ret[i]) or math.isinf(exp):
-         return "failure"
+         return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       retabs = execution.spec_fabsN(N,ret[i])
       expabs = execution.spec_fabsN(N,exp)
       #print("abs:",expabs,retabs)
       if retabs*1.01 < expabs or retabs*0.99 > expabs:
-         return "failure"
+         return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   return "success"
 
 def test_opcode_assert_return_canonical_nan(test,store,modules,registered_modules,moduleinst):
@@ -378,10 +344,9 @@ def test_opcode_assert_trap(test,store,modules,registered_modules,moduleinst):
     return "success"
   else:
     if verbose>=1: print("assert_trap FAILURE")
-    return "failure"
+    return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 def test_opcode_assert_exhaustion(test,store,modules,registered_modules,moduleinst):
-  #print("checking for exhaustion for ", test)
   if "action" in test:
     ret = test_opcode_action(test,store,modules,registered_modules,moduleinst)
   elif "module" in test:
@@ -392,7 +357,7 @@ def test_opcode_assert_exhaustion(test,store,modules,registered_modules,modulein
   else:
     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     if verbose>=1: print("assert_exhaustion FAILURE")
-    return "failure"
+    return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 def test_opcode_assert_malformed(test,store,modules,registered_modules,moduleinst):
   if test["module_type"] != "binary":
@@ -401,7 +366,7 @@ def test_opcode_assert_malformed(test,store,modules,registered_modules,moduleins
     store,moduleinst = test_opcode_module(test,store,modules,registered_modules)
     if moduleinst == "malformed":
       return "success"
-  return "failure"
+  return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 def test_opcode_assert_invalid(test,store,modules,registered_modules,moduleinst):
   if test["module_type"] != "binary":
@@ -412,7 +377,7 @@ def test_opcode_assert_invalid(test,store,modules,registered_modules,moduleinst)
       #print("SUCCESS invalid")
       return "success"
   print("FAILURE invalid !!!!!!!!!")
-  return "failure"
+  return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 def test_opcode_assert_unlinkable(test,store,modules,registered_modules,moduleinst):
   if "filename" in test: # TODO: delete this and do in caller
@@ -422,8 +387,15 @@ def test_opcode_assert_unlinkable(test,store,modules,registered_modules,modulein
     return "success"
   else:
     #print("FAILURE UNLINKABLE")
-    return "failure"
+    return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
+def test_opcode_assert_uninstantiable(test,store,modules,registered_modules,moduleinst):
+  if "filename" in test: # TODO: delete this and do in caller
+    store,moduleinst = test_opcode_module(test,store,modules,registered_modules)
+  if moduleinst == "uninstantiable":
+    return "success"
+  else:
+    return "failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 
 # action opcodes `get` and `invoke`
@@ -436,41 +408,23 @@ def test_opcode_action(test,store,modules,registered_modules,moduleinst):
 
 def test_opcode_action_invoke(test,store,modules,registered_modules,moduleinst):
   if verbose>1: print(test["action"]["field"])
-  #print(test["action"])
   if "module" in test["action"]:
     moduleinst = modules[test["action"]["module"]]
-  #print("moduleinst",moduleinst)
   #get function name, which could include unicode bytes like \u001b which must be converted to unicode string
   funcname = test["action"]["field"]
-  #print("funcname",funcname)
   funcname_with_codepoints_translated = ""
   idx=0
-  utf8_bytes = bytearray()
-  for c in funcname:
-    utf8_bytes += bytearray([ord(c)])
-  utf8_bytes = binary_format.spec_binary_uN_inv(len(funcname),32) + utf8_bytes
+  utf8_bytes = binary_format.spec_binary_name_inv(funcname)
   _,funcname = binary_format.spec_binary_name(utf8_bytes,0)
-  #print("funcname",funcname)
   #get function address
   funcaddr = None
-  #print(moduleinst["exports"])
-  #print("moduleinst",moduleinst)
-  #print("ok moduleinst",moduleinst)
-  #print("test ok",test)
-  #print("OK")
-  #print(moduleinst)
   for export in moduleinst["exports"]:
-    #print("export[\"name\"]",export["name"])
     if export["name"] == funcname:
       funcaddr = export["value"][1]
   if verbose>2: print("funcaddr",funcaddr)
-  #print("funcaddr",funcaddr)
-  #funcbody = store["funcs"][funcaddr]["code"]["body"]
-  #print(wasm.print_tree_expr(funcbody))
   #get args
   args = []
   float_flag = 0
-  #print(test["action"]["args"])
   for idx in range(len(test["action"]["args"])):
     type_ = test["action"]["args"][idx]["type"]
     value = test["action"]["args"][idx]["value"]
@@ -480,7 +434,6 @@ def test_opcode_action_invoke(test,store,modules,registered_modules,moduleinst):
       float_flag = 1 #this is a hack to avoid floating point until implemented
       value = int2float(int(type_[1:]),value)
     args+=[ [type_+".const",value] ]
-  #print("args: ",args)
   #invoke func
   ret = []
   #if not float_flag:
@@ -494,21 +447,11 @@ def test_opcode_action_get(test,store,modules,registered_modules,moduleinst):
     moduleinst = modules[test["action"]["module"]]
   exports = moduleinst["exports"]
   #this is naive, since test["expected"] is a list, should iterate over each one, but maybe OK since there is only one test["action"]
-  #print(exports)
   for export in exports:
     if export["name"] == test["action"]["field"]:
       globaladdr = export["value"][1]
-      #print("store",store)
-      #print("store[\"gloabls\"]",store["globals"])
       value = store["globals"][globaladdr]["value"][1]
-      #print("test_opcode_action_get",value)
       return [value]
-      #num_tests_tried+=1
-      #if value != test["expected"][0]["value"]:
-      #  if verbose>1: print("SUCCESS")
-        #num_tests_passed+=1
-      #else:
-      #  if verbose>1: print("FAILURE")
 
 
 
@@ -523,8 +466,6 @@ def run_test_file(jsonfilename):
   with open(jsonfilename) as f:
     d = json.load(f)
   if d==None: return -1
-  #print(d)
-  #print(json.dumps(d,indent=2))
   if "source_filename" not in d:
     print("this may not be a valid wabt test file")
     return -1
@@ -542,7 +483,6 @@ def run_test_file(jsonfilename):
   num_tests_tried = 0
   for idx,test in enumerate(tests):	#iterate over tests in this file
     if verbose>1: print("\ntest #",idx, test["type"])
-    #print("\ntest #",idx, test["type"])
     if test["type"] == "module":		#module
       store,moduleinst = test_opcode_module(test,store,modules,registered_modules)
       num_tests_tried += 1
@@ -556,9 +496,8 @@ def run_test_file(jsonfilename):
       num_tests_tried += 1
       num_tests_passed+=1
     elif test["type"][:7] == "assert_":		#assertion
-      #print("store",store)
       ret = test_opcode_assertion(test,store,modules,registered_modules,moduleinst)
-      if ret in {"success","failure"}:
+      if ret in {"success","failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"}:
         num_tests_tried += 1
       if ret=="success":
         num_tests_passed += 1
@@ -568,9 +507,6 @@ def run_test_file(jsonfilename):
   if verbose>-1: 
    if num_tests_passed!=num_tests_tried:
      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-  
-  #if num_tests_passed!=num_tests_tried: print("#################### FAILED TESTS ########################")
 
 
 

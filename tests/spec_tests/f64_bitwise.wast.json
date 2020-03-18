@@ -360,4 +360,7 @@
   {"type": "assert_return", "line": 366, "action": {"type": "invoke", "field": "neg", "args": [{"type": "f64", "value": "18442240474082181120"}]}, "expected": [{"type": "f64", "value": "9218868437227405312"}]}, 
   {"type": "assert_return", "line": 367, "action": {"type": "invoke", "field": "neg", "args": [{"type": "f64", "value": "9218868437227405312"}]}, "expected": [{"type": "f64", "value": "18442240474082181120"}]}, 
   {"type": "assert_return", "line": 368, "action": {"type": "invoke", "field": "neg", "args": [{"type": "f64", "value": "18444492273895866368"}]}, "expected": [{"type": "f64", "value": "9221120237041090560"}]}, 
-  {"type": "assert_return", "line": 369, "action": {"type": "invoke", "field": "neg", "args": [{"type": "f64", "value": "9221120237041090560"}]}, "expected": [{"type": "f64", "value": "18444492273895866368"}]}]}
+  {"type": "assert_return", "line": 369, "action": {"type": "invoke", "field": "neg", "args": [{"type": "f64", "value": "9221120237041090560"}]}, "expected": [{"type": "f64", "value": "18444492273895866368"}]}, 
+  {"type": "assert_invalid", "line": 374, "filename": "f64_bitwise.wast.1.wasm", "text": "type mismatch", "module_type": "binary"}, 
+  {"type": "assert_invalid", "line": 375, "filename": "f64_bitwise.wast.2.wasm", "text": "type mismatch", "module_type": "binary"}, 
+  {"type": "assert_invalid", "line": 376, "filename": "f64_bitwise.wast.3.wasm", "text": "type mismatch", "module_type": "binary"}]}

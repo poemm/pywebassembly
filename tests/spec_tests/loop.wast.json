@@ -76,5 +76,8 @@
   {"type": "assert_invalid", "line": 415, "filename": "loop.wast.7.wasm", "text": "type mismatch", "module_type": "binary"}, 
   {"type": "assert_invalid", "line": 421, "filename": "loop.wast.8.wasm", "text": "type mismatch", "module_type": "binary"}, 
   {"type": "assert_invalid", "line": 427, "filename": "loop.wast.9.wasm", "text": "type mismatch", "module_type": "binary"}, 
-  {"type": "assert_malformed", "line": 435, "filename": "loop.wast.10.wat", "text": "mismatching label", "module_type": "text"}, 
-  {"type": "assert_malformed", "line": 439, "filename": "loop.wast.11.wat", "text": "mismatching label", "module_type": "text"}]}
+  {"type": "assert_invalid", "line": 434, "filename": "loop.wast.10.wasm", "text": "type mismatch", "module_type": "binary"}, 
+  {"type": "assert_invalid", "line": 443, "filename": "loop.wast.11.wasm", "text": "type mismatch", "module_type": "binary"}, 
+  {"type": "assert_invalid", "line": 452, "filename": "loop.wast.12.wasm", "text": "type mismatch", "module_type": "binary"}, 
+  {"type": "assert_malformed", "line": 463, "filename": "loop.wast.13.wat", "text": "mismatching label", "module_type": "text"}, 
+  {"type": "assert_malformed", "line": 467, "filename": "loop.wast.14.wat", "text": "mismatching label", "module_type": "text"}]}
